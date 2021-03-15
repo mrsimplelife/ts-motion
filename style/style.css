@@ -92,6 +92,7 @@ body {
   scrollbar-width: 6px;
   scrollbar-color: var(--bg-accent-color);
   scrollbar-face-color: var(--accent-color);
+  overflow-y: auto;
 }
 
 .document::-webkit-scrollbar {
