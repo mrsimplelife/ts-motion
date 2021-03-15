@@ -1,5 +1,15 @@
 import { BaseComponent, Component } from "../component.js";
 import { Composable } from "../page/page.js";
+
+export interface MediaData {
+  title: string;
+  url: string;
+}
+export interface TextData {
+  title: string;
+  body: string;
+}
+
 type OnCloseListener = () => void;
 type OnSubmitListener = () => void;
 export class InputDialog
@@ -27,7 +37,7 @@ export class InputDialog
     };
   }
   addChild(child: Component): void {
-    const body = this.element.querySelector(".dialog__body")! as HTMLElement;
+    const body = this.element.querySelector("#dialog__body")! as HTMLElement;
     child.attachTo(body);
   }
   setOnCloseListener(listener: OnCloseListener) {

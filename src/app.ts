@@ -1,5 +1,11 @@
 import { Component } from "./components/component.js";
-import { InputDialog } from "./components/dialog/dialog.js";
+import {
+  InputDialog,
+  MediaData,
+  TextData,
+} from "./components/dialog/dialog.js";
+import { MediaSectionInput } from "./components/dialog/input/media-input.js";
+import { TextSectionInput } from "./components/dialog/input/text-input.js";
 import { ImageComponent } from "./components/page/item/image.js";
 import { NoteComponent } from "./components/page/item/note.js";
 import { TodoComponent } from "./components/page/item/todo.js";
@@ -10,42 +16,67 @@ import {
   PageItemComponent,
 } from "./components/page/page.js";
 
+type InputComponentConstructor<T = (MediaData | TextData) & Component> = {
+  new (): T;
+};
+
 class App {
   private readonly page: Component & Composable;
-  constructor(appRoot: HTMLElement) {
+  constructor(appRoot: HTMLElement, private dialogRoot: HTMLElement) {
     this.page = new PageComponent(PageItemComponent);
     this.page.attachTo(appRoot);
-
-    const image = new ImageComponent(
-      "Image Title",
-      "https://picsum.photos/600/300"
+    this.bindElementToDialog<MediaSectionInput>(
+      "#new-image",
+      MediaSectionInput,
+      (input: MediaData) => {
+        return new ImageComponent(input.title, input.url);
+      }
     );
-    this.page.addChild(image);
-
-    const note = new NoteComponent("Note Title", "Note Body");
-    this.page.addChild(note);
-
-    const todo = new TodoComponent("Todo Title", "Todo Item");
-    this.page.addChild(todo);
-
-    const video = new VideoComponent(
-      "Video Title",
-      `<iframe width="300" height="150" src="https://www.youtube.com/embed/t06y9F61Hxc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+    this.bindElementToDialog<MediaSectionInput>(
+      "#new-video",
+      MediaSectionInput,
+      (input: MediaData) => {
+        return new VideoComponent(input.title, input.url);
+      }
     );
-    this.page.addChild(video);
+    this.bindElementToDialog<TextSectionInput>(
+      "#new-note",
+      TextSectionInput,
+      (input) => {
+        return new NoteComponent(input.title, input.body);
+      }
+    );
+    this.bindElementToDialog<TextSectionInput>(
+      "#new-todo",
+      TextSectionInput,
+      (input: TextData) => {
+        return new TodoComponent(input.title, input.body);
+      }
+    );
+  }
 
-    const imageBtn = document.querySelector("#new-image")! as HTMLButtonElement;
-    imageBtn.addEventListener("click", () => {
+  private bindElementToDialog<T extends (MediaData | TextData) & Component>(
+    selector: string,
+    InputComponent: InputComponentConstructor<T>,
+    makeSection: (input: T) => Component
+  ) {
+    const element = document.querySelector(selector)! as HTMLButtonElement;
+    element.addEventListener("click", () => {
       const dialog = new InputDialog();
+      const input = new InputComponent();
+      dialog.addChild(input);
+      dialog.attachTo(this.dialogRoot);
+
       dialog.setOnCloseListener(() => {
-        dialog.removeFrom(document.body);
+        dialog.removeFrom(this.dialogRoot);
       });
       dialog.setOnSubmitListener(() => {
-        dialog.removeFrom(document.body);
+        const item = makeSection(input);
+        this.page.addChild(item);
+        dialog.removeFrom(this.dialogRoot);
       });
-      dialog.attachTo(document.body, "beforeend");
     });
   }
 }
 
-new App(document.querySelector(".document")! as HTMLElement);
+new App(document.querySelector(".document")! as HTMLElement, document.body);
