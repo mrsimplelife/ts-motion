@@ -18,7 +18,7 @@ export class PageItemComponent
     super(`<li class="page-item">
             <section class="page-item__body"></section>
             <div class="page-item__controls">
-              <button class="close">⨂</button>
+              <button class="close">⊠</button>
             </div>
           </li>`);
     const closeBtn = this.element.querySelector(".close")! as HTMLButtonElement;
