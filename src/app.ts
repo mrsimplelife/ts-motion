@@ -6,6 +6,7 @@ class App {
   constructor(appRoot: HTMLElement) {
     this.page = new PageComponent();
     this.page.attachTo(appRoot);
+
     const image = new ImageComponent(
       "Image Title",
       "https://picsum.photos/600/300"
