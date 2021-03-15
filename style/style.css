@@ -89,21 +89,27 @@ body {
   height: 100%;
   background-color: var(--document-bg-color);
   /* Firefox */
-  scrollbar-width: 6px;
+  /* scrollbar-width: 6px;
   scrollbar-color: var(--bg-accent-color);
-  scrollbar-face-color: var(--accent-color);
-  overflow-y: auto;
+  scrollbar-face-color: var(--accent-color); */
+  overflow: auto;
 }
 
 .document::-webkit-scrollbar {
   /* Safari and Chrome */
   background-color: var(--bg-accent-color);
-  width: 6px;
+  /* width: 6px;  */
 }
-
+.document::-webkit-scrollbar-corner {
+  /* Safari and Chrome */
+  background-color: var(--bg-accent-color);
+  /* width: 6px;  */
+}
 .document::-webkit-scrollbar-thumb {
   /* Safari and Chrome */
   background-color: var(--accent-color);
+  /* 
+  */
 }
 
 .footer {
